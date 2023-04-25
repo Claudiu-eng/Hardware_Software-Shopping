@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xml:th="http://www.thymeleaf.org">
+<head>
+    <title>Client page</title>
+    <link rel="stylesheet" href="/css/style1.css">
+    <link rel="stylesheet" href="/css/style6.css">
+</head>
+
+<body>
+<header role="banner" th:object = "${product}">
+    <h1 th:text="'My id = ' + ${product.id}" ></h1>
+    <ul class="utilities">
+        <br>
+        <li class="logout warn"><a href="/client_page/log_out">Log Out</a></li>
+    </ul>
+</header>
+
+<nav role='navigation' th:object = "${product}">
+    <ul class="main">
+        <li class="write"><a href="#">Write news</a></li>
+        <li class="users" ><a href="/client_page/client_see_products" th:href="@{/client_page/client_see_products(id=${product.id})}">See Products</a></li>
+        <li class="users" ><a href="/client_page/client_see_shopping_cart" th:href="@{/client_page/client_see_shopping_cart(id=${product.id})}" > See ShoppingCart</a></li>
+        <li class="users" ><a href="#">Manage Reviews</a></li>
+    </ul>
+</nav>
+
+<div th:unless="${empty}">
+    <main role="main">
+
+        <section class="panel important">
+            <h1>Table Client</h1>
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Review</th>
+                    <th>Stock</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th th:if="${shop}" >Quantity</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each ="user: ${users}">
+                    <td th:text="${user.name}">Name</td>
+                    <td th:text="${user.description}">Description</td>
+                    <td th:text="${user.review}">Review</td>
+                    <td th:text="${user.stock}">Stock</td>
+                    <td th:text="${user.category}">Category</td>
+                    <td th:text="${user.price}">Price</td>
+                    <th th:if="${shop}" th:text="${user.cantitate}">Quantity</th>
+                    <td>
+                        <form th:unless ="${shop}" method="POST" action="/client_page/buy_product">
+                            <input type="hidden" name="id" th:value="${product.id}">
+                            <input type="hidden" name = "productId" th:value="${user.id}">
+                            <button type="submit" class="edit-button">Buy product</button>
+                        </form>
+                        <form method="POST" th:if ="${shop}" action="/client_page/delete_product">
+                            <input type="hidden" name="id" th:value="${product.id}">
+                            <input type="hidden" name = "productId" th:value="${user.id}">
+                            <button type="submit" class="delete-button">Delete product</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+</div>
+</body>
+</html>

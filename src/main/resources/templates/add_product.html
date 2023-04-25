@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:c="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert product</title>
+    <link href="//db.onlinewebfonts.com/c/a4e256ed67403c6ad5d43937ed48a77b?family=Core+Sans+N+W01+35+Light" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/css/style3.css" type="text/css">
+    <link rel="stylesheet" href="/css/style5.css" type="text/css">
+</head>
+<body>
+
+<div class="body-content">
+    <div class="module">
+        <h1>Insert a product</h1>
+        <form class="form" action="/employee_page/employee_add_product/insert" method="post" enctype="multipart/form-data" autocomplete="off">
+            <div class="alert alert-error"></div>
+            <input type="text" placeholder="Name" name="name" required />
+            <input type="text" placeholder="Short description" name="description" required />
+            <input type="text" placeholder="Stock" name="stock" pattern="^\d+$" required />
+            <input type="text" placeholder="Price" name="price" pattern="^\d+$" required />
+
+            <select class="form-control" id="dropDownList" name="idCateg">
+                <option th:each="option : ${categories}" th:value="${option.id}" th:text="${option.name}"></option>
+            </select>
+
+            <!--
+            <div class="checkboxes">
+                <label th:each="category : ${categories}">
+                    <input type="checkbox" th:name="categoryIds" th:value="${category.id}" />
+                    <span th:text="${category.name}"></span>
+                </label>
+            </div>
+-->
+
+            <input type="submit" value="Insert" name="insert" class="btn btn-block btn-primary" />
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

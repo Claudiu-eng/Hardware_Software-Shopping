@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:c="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit product</title>
+    <link href="//db.onlinewebfonts.com/c/a4e256ed67403c6ad5d43937ed48a77b?family=Core+Sans+N+W01+35+Light" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/css/style3.css" type="text/css">
+    <link rel="stylesheet" href="/css/style5.css" type="text/css">
+</head>
+<body>
+
+<div class="body-content">
+    <div class="module">
+        <h1>Edit a product</h1>
+        <form class="form" action="/employee_page/employee_edit_product/update" method="post" th:object = "${product}" enctype="multipart/form-data" autocomplete="off">
+            <div class="alert alert-error"></div>
+            <input type="hidden" name = "id" th:value="${product.id}"  required>
+            <label>Name:</label>
+            <input type="text" th:placeholder="${product.name}" name="name" required />
+            <label>Description:</label>
+            <input type="text" th:placeholder="${product.description}" name="description" required />
+            <label>Stock:</label>
+            <input type="text" th:placeholder="${product.stock}" name="stock" pattern="^\d+$" required />
+            <label>Price:</label>
+            <input type="text" th:placeholder="${product.price}" name="price" pattern="^\d+$" required />
+            <label>Category:</label>
+            <select class="form-control" id="dropDownList" name="idCat">
+                <option th:each="option : ${categories}" th:value="${option.id}" th:text="${option.name}"></option>
+            </select>
+
+
+            <input type="submit" value="Update" name="insert" class="btn btn-block btn-primary" />
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

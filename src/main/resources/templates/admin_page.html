@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xml:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin page</title>
+    <link rel="stylesheet" href="/css/style1.css">
+    <link rel="stylesheet" href="/css/style4.css">
+</head>
+
+<body>
+<header role="banner">
+    <h1>Admin Page</h1>
+    <ul class="utilities">
+        <br>
+        <li class="logout warn"><a href="/admin_page/log_out">Log Out</a></li>
+    </ul>
+</header>
+
+<nav role='navigation'>
+    <ul class="main">
+        <li class="See users"><a href="/admin_page/admin_add_user">Add Employee</a></li>
+        <li class="write"><a href="/admin_page/admin_add_category">Add Category</a></li>
+        <li class="users"><a href="#">Manage Products</a></li>
+        <li class="users"><a href="/admin_page/admin_see_users">Manage Users</a></li>
+    </ul>
+</nav>
+
+<div th:unless="${empty}">
+<main role="main">
+
+    <section class="panel important">
+        <h1>Table Example</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email </th>
+                <th>Role</th>
+                <th>NoOfTelephone</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each ="user: ${users}">
+                <td th:text="${user.firstName}">First Name</td>
+                <td th:text="${user.lastName}">Last Name</td>
+                <td th:text="${user.email}">Email</td>
+                <td th:text="${user.role}">Role</td>
+                <td th:text="${user.numberOfTelephone}">NoOfTelephone</td>
+                <td>
+                    <form method="POST" action="/admin_page/delete_user">
+                        <input type="hidden" name = "userId" th:value="${user.id}">
+                        <button type="submit" class="delete-button">Delete user</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </section>
+
+</main>
+</div>
+</body>
+</html>
