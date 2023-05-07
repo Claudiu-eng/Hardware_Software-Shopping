@@ -1,9 +1,7 @@
 package com.example.hardware_softwareshopping.service;
 
 import com.example.hardware_softwareshopping.constants.UserRole;
-import com.example.hardware_softwareshopping.dto.AuthDTO;
-import com.example.hardware_softwareshopping.dto.UserPageDTO;
-import com.example.hardware_softwareshopping.dto.UsersForAdminDTO;
+import com.example.hardware_softwareshopping.dto.*;
 import com.example.hardware_softwareshopping.model.User;
 import org.springframework.stereotype.Component;
 
@@ -25,4 +23,14 @@ public interface UserService {
     User deleteByEmail(String email);
 
     Optional<User> findById(Long id);
+
+    UserPageDTO sendCode(String email);
+
+    UserPageDTO resetPassword(UserResetPasswordDTO userResetPasswordDTO);
+
+    UserPageDTO logOut(String email);
+
+    Integer totalNumberOfConnectedUsers();
+
+    UserActivityDTO getUserActivity(String email);
 }

@@ -5,6 +5,7 @@ import com.example.hardware_softwareshopping.model.Orders;
 import com.example.hardware_softwareshopping.service.CustomerService;
 import com.example.hardware_softwareshopping.service.EmailService;
 import com.example.hardware_softwareshopping.service.OrdersService;
+import com.example.hardware_softwareshopping.service.implementations.EmailServiceImplementation;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +14,11 @@ import java.util.List;
 @Component
 public class NotificationHandler implements ApplicationListener<NewOrderEvent> {
 
-    private final EmailService emailService;
-
+    private final EmailServiceImplementation emailService;
     private final OrdersService ordersService;
-
     private final CustomerService customerService;
 
-    public NotificationHandler(EmailService emailService, OrdersService ordersService, CustomerService customerService) {
+    public NotificationHandler(EmailServiceImplementation emailService, OrdersService ordersService, CustomerService customerService) {
         this.emailService = emailService;
         this.ordersService = ordersService;
         this.customerService = customerService;

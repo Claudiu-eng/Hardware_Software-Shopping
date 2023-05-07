@@ -1,9 +1,12 @@
 package com.example.hardware_softwareshopping.model;
 
-
 import com.example.hardware_softwareshopping.constants.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -20,11 +23,20 @@ public class User {
     private String email;
     private String password;
 
+    private String code;
     private String firstName;
     private String lastName;
     private String numberOfTelephone;
 
     private UserRole userRole;
+
+    private boolean isConnected;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<LocalDateTime> loginTimes;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<LocalDateTime> logoutTimes;
 
     @Override
     public String toString() {

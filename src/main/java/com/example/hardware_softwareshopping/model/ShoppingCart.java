@@ -2,7 +2,6 @@ package com.example.hardware_softwareshopping.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.*;
 
 import java.util.*;
@@ -13,7 +12,6 @@ import java.util.*;
 @Builder
 @Getter
 @Setter
-@Transactional
 public class ShoppingCart {
     @Id
     @GeneratedValue

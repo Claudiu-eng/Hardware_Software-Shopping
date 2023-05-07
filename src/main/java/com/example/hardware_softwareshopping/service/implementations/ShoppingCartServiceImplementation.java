@@ -7,7 +7,6 @@ import com.example.hardware_softwareshopping.repository.CustomerRepository;
 import com.example.hardware_softwareshopping.repository.ProductRepository;
 import com.example.hardware_softwareshopping.repository.ShoppingCartRepository;
 import com.example.hardware_softwareshopping.service.ShoppingCartService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -31,7 +30,6 @@ public class ShoppingCartServiceImplementation implements ShoppingCartService {
     }
 
     @Override
-    @Transactional
     public ShoppingCart insertProduct(Product product,String email) {
         //trb modificat
 

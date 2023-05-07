@@ -14,7 +14,6 @@ import lombok.Setter;
 public class UsersForAdminDTO {
 
     private String email;
-    private String password;
 
     private String firstName;
     private String lastName;

@@ -1,6 +1,6 @@
-package com.example.hardware_softwareshopping.model;
+package com.example.hardware_softwareshopping.dto;
 
-import jakarta.persistence.*;
+import com.example.hardware_softwareshopping.model.Product;
 import lombok.*;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShopCart {
+public class ShopCartDTO {
 
     private List<Product> products;
     private List<Integer> quantities;

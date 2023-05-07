@@ -14,12 +14,11 @@ public interface UserRepository extends CrudRepository<User,Long> {
 
     List<User> findAll();
 
-    void deleteUserByEmail(String email);
-
     User save(User user);
 
     User findByEmail(String email);
 
     Optional<User> findById(Long id);
 
+    List<User> findByIsConnected(boolean isConnected);
 }

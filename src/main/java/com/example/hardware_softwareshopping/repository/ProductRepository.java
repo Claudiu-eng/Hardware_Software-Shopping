@@ -2,7 +2,6 @@ package com.example.hardware_softwareshopping.repository;
 
 import com.example.hardware_softwareshopping.model.Category;
 import com.example.hardware_softwareshopping.model.Product;
-import com.example.hardware_softwareshopping.model.ShoppingCart;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +19,11 @@ public interface ProductRepository extends CrudRepository<Product,Long> {
 
     void deleteById(Long id);
 
-    Product findByDescriptionAndPriceAndName(String description,float price,String name);
+    List<Product> findByNameContainingOrDescriptionContaining(String nameKeyword, String descriptionKeyword);
 
+    List<Product> findByPriceBetweenAndCategoryIn(double minPrice, double maxPrice, List<Category> categories);
+
+    List<Product> findAllByCategoryIn(List<Category> categories);
+
+    List<Product> findAllByPriceBetween(double minPrice,double maxPrice);
 }

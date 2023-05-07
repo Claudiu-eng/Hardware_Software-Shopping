@@ -2,6 +2,7 @@ package com.example.hardware_softwareshopping.service.implementations;
 
 import com.example.hardware_softwareshopping.constants.UserRole;
 import com.example.hardware_softwareshopping.dto.PersonalReviewDTO;
+import com.example.hardware_softwareshopping.dto.ShopCartDTO;
 import com.example.hardware_softwareshopping.model.*;
 import com.example.hardware_softwareshopping.repository.*;
 import com.example.hardware_softwareshopping.service.CustomerService;
@@ -64,6 +65,26 @@ public class CustomerServiceImplementation implements CustomerService {
     }
 
     @Override
+    public ShopCartDTO getShopCart(String email) {
+
+        Customer customer = customerRepository.findByEmail(email);
+        if(customer==null)
+            return null;
+
+        Map<Product,Integer> map = customer.getShoppingCart().getQuantities();
+
+        ShopCartDTO obj= new ShopCartDTO();
+        obj.setProducts(new ArrayList<>());
+        obj.setQuantities(new ArrayList<>());
+
+        for(Map.Entry<Product,Integer> p:map.entrySet()){
+            obj.getProducts().add(p.getKey());
+            obj.getQuantities().add(p.getValue());
+        }
+        return obj;
+    }
+
+    @Override
     public ShoppingCart deleteProduct(Customer customer, Product product) {
         ShoppingCart shoppingCart = customer.getShoppingCart();
 
@@ -71,10 +92,11 @@ public class CustomerServiceImplementation implements CustomerService {
         boolean q = true;
         for (Product p : productSet) {
             if (p.getDescription().equals(product.getDescription()) &&
-                    p.getName().equals(product.getName()))
+                    p.getName().equals(product.getName())) {
                 q = false;
-            product = p;
-            break;
+                product = p;
+                break;
+            }
         }
 
         if (!q)
@@ -93,9 +115,25 @@ public class CustomerServiceImplementation implements CustomerService {
     }
 
     @Override
-    public Customer insertOrder(String email) {
-        return null;
+    public ShopCartDTO deleteProduct(String email, Product product) {
+        Customer customer = customerRepository.findByEmail(email);
+        if(customer==null)
+            return null;
+        ShoppingCart shoppingCart=deleteProduct(customer,product);
+        if(shoppingCart==null)
+            return null;
+        Map<Product,Integer> map=shoppingCart.getQuantities();
+        ShopCartDTO obj= new ShopCartDTO();
+        obj.setProducts(new ArrayList<>());
+        obj.setQuantities(new ArrayList<>());
+
+        for(Map.Entry<Product,Integer> p:map.entrySet()){
+            obj.getProducts().add(p.getKey());
+            obj.getQuantities().add(p.getValue());
+        }
+        return obj;
     }
+
 
     @Override
     public List<Orders> findAllByCustomer(String email) {

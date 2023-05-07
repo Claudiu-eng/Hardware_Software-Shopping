@@ -1,6 +1,7 @@
 package com.example.hardware_softwareshopping.service;
 
 import com.example.hardware_softwareshopping.dto.PersonalReviewDTO;
+import com.example.hardware_softwareshopping.dto.ShopCartDTO;
 import com.example.hardware_softwareshopping.model.*;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +18,11 @@ public interface CustomerService {
     Customer save(Customer employee);
     Optional<Customer> findById(Long id);
 
+    ShopCartDTO getShopCart(String email);
+
     ShoppingCart deleteProduct(Customer customer, Product product);
 
-    Customer insertOrder(String email);
+    ShopCartDTO deleteProduct(String email,Product product);
 
     List<Orders> findAllByCustomer(String email);
 

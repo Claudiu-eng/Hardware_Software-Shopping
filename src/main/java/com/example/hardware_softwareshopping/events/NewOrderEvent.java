@@ -1,7 +1,6 @@
 package com.example.hardware_softwareshopping.events;
 
 import com.example.hardware_softwareshopping.model.Orders;
-import jakarta.persistence.criteria.Order;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
