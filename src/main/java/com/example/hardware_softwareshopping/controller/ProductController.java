@@ -2,7 +2,9 @@ package com.example.hardware_softwareshopping.controller;
 
 
 import com.example.hardware_softwareshopping.dto.NameOrDescriptionDTO;
+import com.example.hardware_softwareshopping.dto.ProductDTO;
 import com.example.hardware_softwareshopping.dto.ProductFilterDTO;
+import com.example.hardware_softwareshopping.exceptions.ApiExceptionResponse;
 import com.example.hardware_softwareshopping.model.Product;
 import com.example.hardware_softwareshopping.service.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,7 +52,7 @@ public class ProductController {
     }
 
     @PostMapping("/insert_product")
-    public ResponseEntity insertProduct(@RequestBody Product product){
+    public ResponseEntity insertProduct(@RequestBody ProductDTO product) throws ApiExceptionResponse {
         return ResponseEntity.status(HttpStatus.OK).body(productService.save(product));
 
     }

@@ -38,6 +38,7 @@ public class OrdersServiceImplementation implements OrdersService {
         ShoppingCart shoppingCart = customer.getShoppingCart();
 
         String msg = "Comanda contine =\n";
+        float totalPrice=0.0f;
         for (Map.Entry<Product, Integer> m : shoppingCart.getQuantities().entrySet()) {
             Optional<Product> p = productRepository.findById(m.getKey().getId());
             if (p.get() == null)
@@ -46,9 +47,10 @@ public class OrdersServiceImplementation implements OrdersService {
                 msg = msg + String.valueOf(m.getValue())+"x "+m.getKey().getName() + " " + m.getKey().getPrice() + "\n";
                 p.get().setStock(p.get().getStock()-m.getValue());
                 productRepository.save(p.get());
+                totalPrice += m.getValue()*p.get().getPrice();
             }
         }
-        msg = msg + "Total = " + shoppingCart.getTotalPrice();
+        msg = msg + "Total = " + totalPrice;
         shoppingCart.getProducts().clear();
         shoppingCart.getQuantities().clear();
         shoppingCart.setTotalPrice(0.0f);

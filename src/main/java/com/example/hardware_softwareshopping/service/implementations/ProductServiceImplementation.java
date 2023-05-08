@@ -1,6 +1,7 @@
 package com.example.hardware_softwareshopping.service.implementations;
 
-import com.example.hardware_softwareshopping.dto.ProductFilterDTO;
+import com.example.hardware_softwareshopping.dto.*;
+import com.example.hardware_softwareshopping.exceptions.ApiExceptionResponse;
 import com.example.hardware_softwareshopping.model.Category;
 import com.example.hardware_softwareshopping.model.Product;
 import com.example.hardware_softwareshopping.model.Review;
@@ -8,15 +9,17 @@ import com.example.hardware_softwareshopping.repository.CategoryRepository;
 import com.example.hardware_softwareshopping.repository.ProductRepository;
 import com.example.hardware_softwareshopping.service.CategoryService;
 import com.example.hardware_softwareshopping.service.ProductService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.beans.XMLEncoder;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,12 +44,36 @@ public class ProductServiceImplementation implements ProductService {
     }
 
     @Override
-    public Product save(Product product) {
+    public Product save(ProductDTO productDTO) throws ApiExceptionResponse {
+        if(productDTO.getCategory()==null)
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message("categ null").errors(Collections.singletonList("error.addrs.not_found")).build();
 
-        Optional<Category> category = categoryRepository.findById(product.getCategory().getId());
-        product.setCategory(category.get());
+        Validator validator  = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
+        Set<ConstraintViolation<CategoryDTO>> violations1 = validator.validate(productDTO.getCategory());
+        if (!violations.isEmpty()) {
+            String msg = "";
+            for (ConstraintViolation<ProductDTO> violation : violations) {
+                msg+=violation.getMessage();
+            }
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message(msg).errors(Collections.singletonList("error.addrs.not_found")).build();
+        }
+        if (!violations1.isEmpty()) {
+            String msg = "";
+            for (ConstraintViolation<CategoryDTO> violation : violations1) {
+                msg+=violation.getMessage();
+            }
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message(msg).errors(Collections.singletonList("error.addrs.not_found")).build();
+        }
+
+        Optional<Category> category = categoryRepository.findById(Long.parseLong(productDTO.getCategory().getId()));
         if(category.get()==null)
-            return null;
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message("categ null").errors(Collections.singletonList("error.addrs.not_found")).build();
+
+        Product product = Product.builder().price(Float.parseFloat(productDTO.getPrice()))
+                        .name(productDTO.getName()).description(productDTO.getDescription())
+                        .stock(Integer.parseInt(productDTO.getStock())).build();
+        product.setCategory(category.get());
         product.setReviewList(new ArrayList<>());
         return productRepository.save(product);
     }
@@ -103,17 +130,6 @@ public class ProductServiceImplementation implements ProductService {
                products.addAll(productsInRange);
            }
        }
-
-        XMLEncoder encoder = null;
-        try {
-            encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream("xmlFiles")));
-        } catch (FileNotFoundException fileNotFound) {
-            System.out.println("ERROR: While Creating or Opening the File dvd.xml");
-        }
-        if (encoder != null){
-            encoder.writeObject(products);
-            encoder.close();
-        }
 
         return products;
     }

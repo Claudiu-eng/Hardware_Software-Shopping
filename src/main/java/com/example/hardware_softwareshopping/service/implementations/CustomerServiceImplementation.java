@@ -1,14 +1,23 @@
 package com.example.hardware_softwareshopping.service.implementations;
 
 import com.example.hardware_softwareshopping.constants.UserRole;
+import com.example.hardware_softwareshopping.dto.AddressDTO;
+import com.example.hardware_softwareshopping.dto.CustomerDTO;
 import com.example.hardware_softwareshopping.dto.PersonalReviewDTO;
 import com.example.hardware_softwareshopping.dto.ShopCartDTO;
+import com.example.hardware_softwareshopping.exceptions.ApiExceptionResponse;
 import com.example.hardware_softwareshopping.model.*;
 import com.example.hardware_softwareshopping.repository.*;
 import com.example.hardware_softwareshopping.service.CustomerService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Valid;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
-import javax.print.attribute.standard.PDLOverrideSupported;
 import java.util.*;
 
 @Service
@@ -17,16 +26,16 @@ public class CustomerServiceImplementation implements CustomerService {
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
     private final ShoppingCartRepository shoppingCartRepository;
-    private final OrdersRepository ordersRepository;
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
 
-    public CustomerServiceImplementation(CustomerRepository customerRepository, UserRepository userRepository, ShoppingCartRepository shoppingCartRepository, OrdersRepository ordersRepository, ProductRepository productRepository, ReviewRepository reviewRepository) {
+
+
+    public CustomerServiceImplementation(CustomerRepository customerRepository, UserRepository userRepository, ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ReviewRepository reviewRepository) {
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
         this.shoppingCartRepository = shoppingCartRepository;
 
-        this.ordersRepository = ordersRepository;
         this.productRepository = productRepository;
         this.reviewRepository = reviewRepository;
     }
@@ -47,15 +56,44 @@ public class CustomerServiceImplementation implements CustomerService {
         return customerRepository.findAll();
     }
 
+
+
     @Override
-    public Customer save(Customer customer) {
-        if (userRepository.findByEmail(customer.getEmail()) != null)
-            return null;
+    public Customer save(CustomerDTO customerDTO) throws ApiExceptionResponse {
+        if (userRepository.findByEmail(customerDTO.getEmail()) != null)
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message("email already exist").errors(Collections.singletonList("error.addrs.not_found")).build();
+
+        Validator validator  = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<CustomerDTO>> violations = validator.validate(customerDTO);
+        Set<ConstraintViolation<AddressDTO>> violations1 = validator.validate(customerDTO.getAddress());
+        if (!violations.isEmpty()) {
+            String msg = "";
+            for (ConstraintViolation<CustomerDTO> violation : violations) {
+                msg+=violation.getMessage();
+            }
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message(msg).errors(Collections.singletonList("error.addrs.not_found")).build();
+        }
+        if (!violations1.isEmpty()) {
+            String msg = "";
+            for (ConstraintViolation<AddressDTO> violation : violations1) {
+                msg+=violation.getMessage();
+            }
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message(msg).errors(Collections.singletonList("error.addrs.not_found")).build();
+        }
+        Address address = Address.builder().city(customerDTO.getAddress().getCity())
+                .street(customerDTO.getAddress().getStreet()).number(Long.parseLong(customerDTO.getAddress().getNumber())).build();
+        Customer customer = new Customer();
+        customer.setEmail(customerDTO.getEmail());
+        customer.setPassword(customerDTO.getPassword());
+        customer.setFirstName(customerDTO.getFirstName());
+        customer.setLastName(customerDTO.getLastName());
+        customer.setNumberOfTelephone(customerDTO.getNumberOfTelephone());
+        customer.setAddress(address);
+
         customer.setUserRole(UserRole.CUSTOMER);
         customer.setNotificationList(new ArrayList<>());
 
         customer.setShoppingCart(new ShoppingCart());
-
         return customerRepository.save(customer);
     }
 

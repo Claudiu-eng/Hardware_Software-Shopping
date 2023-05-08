@@ -5,18 +5,21 @@ import com.example.hardware_softwareshopping.dto.*;
 
 import com.example.hardware_softwareshopping.events.NewOrderEvent;
 import com.example.hardware_softwareshopping.events.NewResetPasswordEvent;
+import com.example.hardware_softwareshopping.exceptions.ApiExceptionResponse;
 import com.example.hardware_softwareshopping.model.User;
 
 import com.example.hardware_softwareshopping.repository.UserRepository;
 import com.example.hardware_softwareshopping.service.UserService;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -44,8 +47,6 @@ public class UserServiceImplementation implements UserService {
         userPageDTO.setUserRole(user.getUserRole());
         return userPageDTO;
     }
-
-
 
     @Override
     public User save(User user) {
@@ -94,10 +95,10 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserPageDTO sendCode(String email) {
+    public UserPageDTO sendCode(String email) throws ApiExceptionResponse{
         User user=userRepository.findByEmail(email);
         if(user==null)
-            return null;
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message("email invalid").errors(Collections.singletonList("error.addrs.not_found")).build();
         String randomString = UUID.randomUUID().toString().substring(0,8);
         user.setCode(randomString);
         userRepository.save(user);
@@ -109,22 +110,34 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserPageDTO resetPassword(UserResetPasswordDTO userResetPasswordDTO) {
+    public UserPageDTO resetPassword(UserResetPasswordDTO userResetPasswordDTO) throws ApiExceptionResponse {
 
         User user = userRepository.findByEmail(userResetPasswordDTO.getEmail());
         if(user==null)
-            return null;
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message("email invalid/not found").errors(Collections.singletonList("error.addrs.not_found")).build();
+
+
+        Validator validator  = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<UserResetPasswordDTO>> violations = validator.validate(userResetPasswordDTO);
+        if (!violations.isEmpty()) {
+            String msg = "";
+            for (ConstraintViolation<UserResetPasswordDTO> violation : violations) {
+                msg+=violation.getMessage();
+            }
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message(msg).errors(Collections.singletonList("error.addrs.not_found")).build();
+        }
+
         if(!userResetPasswordDTO.getPassword().equals(
-                userResetPasswordDTO.getConfirmPassword()
-        )) {
+                userResetPasswordDTO.getConfirmPassword())) {
             user.setCode("");
             userRepository.save(user);
-            return null;
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message("parolele nu coincid,recereti cod").errors(Collections.singletonList("error.addrs.not_found")).build();
+
         }
         if(!user.getCode().equals(userResetPasswordDTO.getCode())) {
             user.setCode("");
             userRepository.save(user);
-            return null;
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message("codurile nu coincid,recereti cod").errors(Collections.singletonList("error.addrs.not_found")).build();
         }
 
         UserPageDTO userPageDTO = UserPageDTO.builder()

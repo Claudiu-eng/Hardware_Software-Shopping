@@ -15,6 +15,8 @@ public class Review {
     @GeneratedValue
     private Long id;
 
+    @NonNull
+
     private int numberOfStars;
 
     private String message;

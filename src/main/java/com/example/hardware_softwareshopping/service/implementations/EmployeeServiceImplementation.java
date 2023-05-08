@@ -1,18 +1,25 @@
 package com.example.hardware_softwareshopping.service.implementations;
 
 import com.example.hardware_softwareshopping.constants.UserRole;
+import com.example.hardware_softwareshopping.dto.AddressDTO;
+import com.example.hardware_softwareshopping.dto.CustomerDTO;
+import com.example.hardware_softwareshopping.dto.EmployeeDTO;
+import com.example.hardware_softwareshopping.exceptions.ApiExceptionResponse;
 import com.example.hardware_softwareshopping.model.Customer;
 import com.example.hardware_softwareshopping.model.Employee;
 import com.example.hardware_softwareshopping.model.Product;
 import com.example.hardware_softwareshopping.model.Review;
-import com.example.hardware_softwareshopping.repository.CustomerRepository;
-import com.example.hardware_softwareshopping.repository.EmployeeRepository;
-import com.example.hardware_softwareshopping.repository.ProductRepository;
-import com.example.hardware_softwareshopping.repository.ReviewRepository;
+import com.example.hardware_softwareshopping.repository.*;
 import com.example.hardware_softwareshopping.service.EmployeeService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class EmployeeServiceImplementation implements EmployeeService {
@@ -20,12 +27,14 @@ public class EmployeeServiceImplementation implements EmployeeService {
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
 
-    public EmployeeServiceImplementation(EmployeeRepository employeeRepository, ProductRepository productRepository, CustomerRepository customerRepository, ReviewRepository reviewRepository) {
+    public EmployeeServiceImplementation(EmployeeRepository employeeRepository, ProductRepository productRepository, CustomerRepository customerRepository, ReviewRepository reviewRepository, UserRepository userRepository) {
         this.employeeRepository = employeeRepository;
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
         this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -41,10 +50,28 @@ public class EmployeeServiceImplementation implements EmployeeService {
     }
 
     @Override
-    public Employee save(Employee employee) {
+    public Employee save(EmployeeDTO employeeDTO) throws ApiExceptionResponse{
+
+        if (userRepository.findByEmail(employeeDTO.getEmail()) != null)
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message("email already exist").errors(Collections.singletonList("error.addrs.not_found")).build();
+
+        Validator validator  = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<EmployeeDTO>> violations = validator.validate(employeeDTO);
+        if (!violations.isEmpty()) {
+            String msg = "";
+            for (ConstraintViolation<EmployeeDTO> violation : violations) {
+                msg+=violation.getMessage();
+            }
+            throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message(msg).errors(Collections.singletonList("error.addrs.not_found")).build();
+        }
+        Employee employee = new Employee();
+        employee.setWage(Integer.parseInt(employeeDTO.getWage()));
+        employee.setPassword(employeeDTO.getPassword());
+        employee.setEmail(employeeDTO.getEmail());
+        employee.setFirstName(employeeDTO.getFirstName());
+        employee.setLastName(employee.getLastName());
+        employee.setNumberOfTelephone(employeeDTO.getNumberOfTelephone());
         employee.setUserRole(UserRole.EMPLOYEE);
-        if (employeeRepository.findByEmail(employee.getEmail()) != null)
-            return null;
         return employeeRepository.save(employee);
     }
 

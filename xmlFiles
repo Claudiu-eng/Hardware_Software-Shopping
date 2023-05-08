@@ -1,4 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <java version="18" class="java.beans.XMLDecoder">
- <object class="java.util.ArrayList"/>
+ <object class="java.util.ArrayList">
+  <void method="add">
+   <object class="com.example.hardware_softwareshopping.model.Product" id="Product0">
+    <void property="category">
+     <object class="com.example.hardware_softwareshopping.model.Category" id="Category0">
+      <void property="id">
+       <long>1</long>
+      </void>
+      <void property="name">
+       <string>software</string>
+      </void>
+      <void property="products">
+       <object class="org.hibernate.collection.spi.PersistentBag">
+        <void property="owner">
+         <object idref="Category0"/>
+        </void>
+       </object>
+      </void>
+     </object>
+    </void>
+    <void property="description">
+     <string>portabila bluetooth</string>
+    </void>
+    <void property="id">
+     <long>4</long>
+    </void>
+    <void property="name">
+     <string>Boxa </string>
+    </void>
+    <void property="price">
+     <float>100.0</float>
+    </void>
+    <void property="reviewList">
+     <object class="org.hibernate.collection.spi.PersistentBag">
+      <void property="owner">
+       <object idref="Product0"/>
+      </void>
+     </object>
+    </void>
+    <void property="shoppingCarts">
+     <object class="org.hibernate.collection.spi.PersistentSet">
+      <void property="owner">
+       <object idref="Product0"/>
+      </void>
+     </object>
+    </void>
+    <void property="stock">
+     <int>322</int>
+    </void>
+   </object>
+  </void>
+ </object>
 </java>

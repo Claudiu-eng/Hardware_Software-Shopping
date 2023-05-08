@@ -1,7 +1,9 @@
 package com.example.hardware_softwareshopping.service;
 
+import com.example.hardware_softwareshopping.dto.CustomerDTO;
 import com.example.hardware_softwareshopping.dto.PersonalReviewDTO;
 import com.example.hardware_softwareshopping.dto.ShopCartDTO;
+import com.example.hardware_softwareshopping.exceptions.ApiExceptionResponse;
 import com.example.hardware_softwareshopping.model.*;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,7 @@ public interface CustomerService {
 
     Customer findByEmail(String email);
     List<Customer> findAll();
-    Customer save(Customer employee);
+    Customer save(CustomerDTO customer)throws ApiExceptionResponse;
     Optional<Customer> findById(Long id);
 
     ShopCartDTO getShopCart(String email);
