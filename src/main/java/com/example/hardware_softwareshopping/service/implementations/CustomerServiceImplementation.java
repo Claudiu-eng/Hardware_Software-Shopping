@@ -9,6 +9,8 @@ import com.example.hardware_softwareshopping.exceptions.ApiExceptionResponse;
 import com.example.hardware_softwareshopping.model.*;
 import com.example.hardware_softwareshopping.repository.*;
 import com.example.hardware_softwareshopping.service.CustomerService;
+import com.example.hardware_softwareshopping.utils.FileExporter;
+import com.example.hardware_softwareshopping.utils.XMLFileExporter;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
 import jakarta.validation.Validation;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImplementation implements CustomerService {
@@ -181,6 +184,25 @@ public class CustomerServiceImplementation implements CustomerService {
             return null;
 
         return customer.getOrderList();
+
+    }
+
+    @Override
+    public String generateXML(List<Product> products) {
+
+        FileExporter fileExporter = new XMLFileExporter();
+
+        StringBuilder exportedData = new StringBuilder();
+        for (int i = 0; i < products.size(); i++) {
+            String productData = fileExporter.exportData(products.get(i));
+            if (i > 0) {
+                productData = productData.replaceFirst(".*\n", "");
+            }
+            exportedData.append(productData);
+        }
+        return exportedData.toString();
+
+
 
     }
 

@@ -28,6 +28,8 @@ public interface CustomerService {
 
     List<Orders> findAllByCustomer(String email);
 
+    String generateXML(List<Product> products);
+
     Customer insertReview(Review review, Long productID,String email);
 
     PersonalReviewDTO getPersonalReviews(String email);

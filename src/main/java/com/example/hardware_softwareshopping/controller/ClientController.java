@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin
@@ -78,6 +79,12 @@ public class ClientController {
     public ResponseEntity buyProduct(@PathVariable String email,@RequestBody Product product){
 
         return ResponseEntity.status(HttpStatus.OK).body(shoppingCartService.insertProduct(product,email));
+    }
+
+    @PostMapping("/generate_xml")
+    public ResponseEntity generateXML(@RequestBody List<Product> products){
+
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.generateXML(products));
     }
 
     @PostMapping("/place_order/{email}")
