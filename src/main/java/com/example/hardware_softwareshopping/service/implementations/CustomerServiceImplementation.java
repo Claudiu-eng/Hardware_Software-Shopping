@@ -72,14 +72,14 @@ public class CustomerServiceImplementation implements CustomerService {
         if (!violations.isEmpty()) {
             String msg = "";
             for (ConstraintViolation<CustomerDTO> violation : violations) {
-                msg+=violation.getMessage();
+                msg=msg+violation.getMessage()+'\n';
             }
             throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message(msg).errors(Collections.singletonList("error.addrs.not_found")).build();
         }
         if (!violations1.isEmpty()) {
             String msg = "";
             for (ConstraintViolation<AddressDTO> violation : violations1) {
-                msg+=violation.getMessage();
+                msg=msg+violation.getMessage()+'\n';
             }
             throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message(msg).errors(Collections.singletonList("error.addrs.not_found")).build();
         }
@@ -201,8 +201,6 @@ public class CustomerServiceImplementation implements CustomerService {
             exportedData.append(productData);
         }
         return exportedData.toString();
-
-
 
     }
 

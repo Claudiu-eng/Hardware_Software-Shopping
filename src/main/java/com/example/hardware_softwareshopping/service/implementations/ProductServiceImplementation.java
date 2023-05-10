@@ -27,10 +27,9 @@ public class ProductServiceImplementation implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
-    public ProductServiceImplementation(ProductRepository productRepository, CategoryService categoryService, CategoryRepository categoryRepository) {
+    public ProductServiceImplementation(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.hardware_softwareshopping.repository;
 
+import com.example.hardware_softwareshopping.constants.UserRole;
 import com.example.hardware_softwareshopping.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -21,4 +22,8 @@ public interface UserRepository extends CrudRepository<User,Long> {
     Optional<User> findById(Long id);
 
     List<User> findByIsConnected(boolean isConnected);
+
+    List<User> findByEmailContainingOrUserRoleIn(String email, List<UserRole> userRoles);
+
+
 }

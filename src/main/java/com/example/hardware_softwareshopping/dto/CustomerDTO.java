@@ -13,7 +13,7 @@ import lombok.*;
 public class CustomerDTO {
 
     @NonNull
-    @Email(message = "email .....")
+    @Email(message = "email invalid")
     private String email;
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
             message = "Invalid password format," +
@@ -23,9 +23,14 @@ public class CustomerDTO {
 
 
     @NonNull
+    @Pattern(regexp = "^[A-Z][a-z\s]*$",message = "first letter of firstName" +
+            "must be upercase")
     @Size(min = 3,max = 20,message = "size first name must be between {min} and {max}")
     private String firstName;
+
     @NonNull
+    @Pattern(regexp = "^[A-Z][a-z\s]*$",message = "first letter of lastName" +
+            "must be upercase")
     @Size(min = 3,max = 20,message = "size last name must be between {min} and {max}")
     private String lastName;
 

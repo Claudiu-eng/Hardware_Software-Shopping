@@ -33,5 +33,7 @@ public interface UserService {
 
     Integer totalNumberOfConnectedUsers();
 
+    List<UsersForAdminDTO> searchUsers(UserSearchedDTO userSearchedDTO);
+
     UserActivityDTO getUserActivity(String email);
 }

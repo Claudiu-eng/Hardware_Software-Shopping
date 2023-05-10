@@ -2,15 +2,13 @@ package com.example.hardware_softwareshopping.dto;
 
 
 import com.example.hardware_softwareshopping.constants.UserRole;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class UsersForAdminDTO {
 
     private String email;

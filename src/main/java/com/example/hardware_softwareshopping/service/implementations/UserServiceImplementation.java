@@ -1,6 +1,7 @@
 package com.example.hardware_softwareshopping.service.implementations;
 
 
+import com.example.hardware_softwareshopping.constants.UserRole;
 import com.example.hardware_softwareshopping.dto.*;
 
 import com.example.hardware_softwareshopping.events.NewOrderEvent;
@@ -122,7 +123,7 @@ public class UserServiceImplementation implements UserService {
         if (!violations.isEmpty()) {
             String msg = "";
             for (ConstraintViolation<UserResetPasswordDTO> violation : violations) {
-                msg+=violation.getMessage();
+                msg+=violation.getMessage()+"\n";;
             }
             throw ApiExceptionResponse.builder().status(HttpStatus.NOT_FOUND).message(msg).errors(Collections.singletonList("error.addrs.not_found")).build();
         }
@@ -163,6 +164,25 @@ public class UserServiceImplementation implements UserService {
     @Override
     public Integer totalNumberOfConnectedUsers() {
         return userRepository.findByIsConnected(true).size();
+    }
+
+    @Override
+    public List<UsersForAdminDTO> searchUsers(UserSearchedDTO userSearchedDTO) {
+        List<UserRole> list=new ArrayList<>();
+        for(String s:userSearchedDTO.getRoles())
+            if(s.equals("Admin"))
+                list.add(UserRole.ADMIN);
+            else if(s.equals("Employee"))
+                list.add(UserRole.EMPLOYEE);
+            else list.add(UserRole.CUSTOMER);
+
+        List<User> users = userRepository.findByEmailContainingOrUserRoleIn(userSearchedDTO.getEmail(),list);
+        List<UsersForAdminDTO> list1=new ArrayList<>();
+
+        for(User u:users)
+            list1.add(UsersForAdminDTO.builder().userRole(u.getUserRole()).firstName(u.getFirstName())
+                    .lastName(u.getLastName()).email(u.getEmail()).numberOfTelephone(u.getNumberOfTelephone()).build());
+        return list1;
     }
 
     @Override
