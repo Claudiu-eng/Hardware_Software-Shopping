@@ -24,5 +24,4 @@ public interface CustomerRepository extends CrudRepository<Customer,Long> {
 
     Customer save(Customer customer);
 
-
 }

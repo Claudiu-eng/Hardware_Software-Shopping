@@ -1,6 +1,7 @@
 package com.example.hardware_softwareshopping.model;
 
 
+import com.example.hardware_softwareshopping.constants.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class Orders {
 
     private String message;
 
+    private OrderStatus orderStatus;
 
 
 }

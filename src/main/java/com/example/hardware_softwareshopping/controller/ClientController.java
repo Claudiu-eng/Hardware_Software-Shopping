@@ -2,6 +2,7 @@ package com.example.hardware_softwareshopping.controller;
 
 
 import com.example.hardware_softwareshopping.dto.ShopCartDTO;
+import com.example.hardware_softwareshopping.exceptions.ApiExceptionResponse;
 import com.example.hardware_softwareshopping.model.*;
 import com.example.hardware_softwareshopping.service.CustomerService;
 import com.example.hardware_softwareshopping.service.OrdersService;
@@ -30,6 +31,12 @@ public class ClientController {
         this.shoppingCartService = shoppingCartService;
         this.customerService = customerService;
         this.ordersService = ordersService;
+    }
+
+    @GetMapping("/see_clients")
+    public ResponseEntity getClients(){
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.findAll());
+
     }
 
     @PostMapping("/lasa_review/{productID}/{email}")
@@ -67,6 +74,16 @@ public class ClientController {
     public ResponseEntity seeShopCart(@PathVariable String email){
 
         return ResponseEntity.status(HttpStatus.OK).body(customerService.getShopCart(email));
+    }
+
+    @PutMapping("/reject_order/{orderId}/{email}")
+    public ResponseEntity rejectOrder(@PathVariable Long orderId,@PathVariable String email) throws ApiExceptionResponse {
+        return ResponseEntity.status(HttpStatus.OK).body(ordersService.rejectOrder(orderId,email));
+    }
+
+    @PutMapping("/validate_order/{orderId}/{email}")
+    public ResponseEntity validateOrder(@PathVariable Long orderId,@PathVariable String email) throws ApiExceptionResponse {
+        return ResponseEntity.status(HttpStatus.OK).body(ordersService.validateOrder(orderId,email));
     }
 
     @PostMapping("/see_orders/{email}")
